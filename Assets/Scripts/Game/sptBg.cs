@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class sptBg : MonoBehaviour {
 
-    private SpriteRenderer m_SpriteRenderer; 
-    private AssetManager m_AssetManager;            //资源管理器
+    private SpriteRenderer mySpriteRenderer; 
+    private AssetManager myAssetManager;            //资源管理器
+    private BgSprite NowBgSprite;                             //当前游戏背景图片
 
     public void Awake()
     {
-        m_SpriteRenderer = GetComponent<SpriteRenderer>();
-        m_AssetManager =AssetManager.GetAssetManager();
+        InitBg();
+    }
+
+    public void InitBg()
+    {
+        mySpriteRenderer = GetComponent<SpriteRenderer>();
+        myAssetManager = AssetManager.GetAssetManager();
+        NowBgSprite = GameManager.instance.GameData.NowBgSprite;
         //设置游戏背景
         SetBackground();
     }
@@ -20,8 +27,23 @@ public class sptBg : MonoBehaviour {
     /// </summary>
     private void SetBackground()
     {
-        //获取张随机游戏背景
-        int index = Random.Range(0, m_AssetManager.m_Background.Count);
-        m_SpriteRenderer.sprite = m_AssetManager.m_Background[index];
+        switch (NowBgSprite)
+        {
+            case BgSprite.Fire:
+                mySpriteRenderer.sprite = myAssetManager.bgRender[1];
+                break;
+            case BgSprite.Grass:
+                mySpriteRenderer.sprite = myAssetManager.bgRender[2];
+                break;
+            case BgSprite.Ice:
+                mySpriteRenderer.sprite = myAssetManager.bgRender[0];
+                break;
+            case BgSprite.Normal:
+                mySpriteRenderer.sprite = myAssetManager.bgRender[3];
+                break;
+            default :
+                mySpriteRenderer.sprite = myAssetManager.bgRender[3];
+                break;
+        }
     }
 }

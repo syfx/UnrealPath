@@ -10,5 +10,8 @@ public class AssetManager : ScriptableObject {
         return Resources.Load<AssetManager>("MyAssetManager");
     }
 
-    public List<Sprite> m_Background = new List<Sprite>();
+    [Tooltip("背景皮肤列表")]
+    public List<Sprite> bgRender = new List<Sprite>();
+    [Tooltip("平台皮肤列表")]
+    public List<Sprite> platformRender = new List<Sprite>();
 }

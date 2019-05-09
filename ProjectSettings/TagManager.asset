@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Game
+    uniqueID: 3937064889
+    locked: 0
+  - name: Obstacle
+    uniqueID: 2370709687
+    locked: 0
+  - name: UI
+    uniqueID: 1030827015
+    locked: 0

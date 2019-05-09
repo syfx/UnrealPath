@@ -48,6 +48,7 @@ public class ObjectPool {
     /// <param name="m_object"></param>
     public void PutInObject(GameObject m_object)
     {
+        m_object.SetActive(false);
         //放入游戏物体
         objectList.Add(m_object); 
     }
