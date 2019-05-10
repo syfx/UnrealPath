@@ -38,6 +38,8 @@ public class StartPanel : MonoBehaviour
         EventCenter.Broadcast(EventDefine.ShowGamePanel);
         //隐藏自己
         gameObject.SetActive(false);
+        //开始游戏
+        GameManager.instance.StartGame();
     }
 
     /// <summary>

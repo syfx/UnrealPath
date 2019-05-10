@@ -8,35 +8,35 @@ using UnityEngine;
 
 [SerializeField]
 public class GameData {
-    private BgSprite nowBgSprite;
+    private BgSprite nowBgSpriteType;
     /// <summary>
     /// 当前使用的游戏中背景
     /// </summary>
-    public BgSprite NowBgSprite
+    public BgSprite NowBgSpriteType
     {
         get
         {
-            return nowBgSprite;
+            return nowBgSpriteType;
         }
         set
         {
-            nowBgSprite = value;
+            nowBgSpriteType = value;
         }
     }
 
-    private PlatformSprite nowPlatformSprite;
+    private PlatformSprite nowPlatformSpriteType;
     /// <summary>
     /// 当前使用的台阶的类型
     /// </summary>
-    public PlatformSprite NowPlatformSprite
+    public PlatformSprite NowPlatformSpriteType
     {
         get
         {
-            return nowPlatformSprite;
+            return nowPlatformSpriteType;
         }
         set
         {
-            nowPlatformSprite = value;
+            nowPlatformSpriteType = value;
         }
     }
 }

@@ -4,24 +4,16 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour {
 
-    private float life;                               //平台生存周期
+    private float lifeTime;                         //平台生存周期
     private bool isDrop;                          //是否下落
     private float dropSpeed;                   //下落速度
     private float startSpeed;                   //起始速度
     private float acceleratedSpeed;        //加速度
     private ObjectPool myObjectPool;   //当前物的对象池
 
-    /// <summary>
-    /// 是否首次被加载
-    /// </summary>
-    public bool IsFirstLoad { get; private set; }
-
-
     public void Awake()
     {
-        IsFirstLoad = true;
-
-        life = 5;
+        lifeTime = 30;
         isDrop = false;
         startSpeed = 1;
         acceleratedSpeed = 0.2f;
@@ -42,39 +34,32 @@ public class Obstacle : MonoBehaviour {
     /// <param name="life"></param>
     public void Init(ObjectPool objPool, float life)
     {
-        if (IsFirstLoad)
-        {
-            IsFirstLoad = false;
-            //设置对象池
-            myObjectPool = objPool;
-            //初始化生存周期
-            this.life = life;
-        }
-    }
+        //设置对象池
+        myObjectPool = objPool;
+        //初始化生存周期
+        lifeTime = life;
 
-    public void OnEnable()
-    {
         isDrop = false;
         dropSpeed = startSpeed;
         StartCoroutine("Drop");
     }
+
     public void OnDisable()
     {
         StopCoroutine("Drop");
+        StopCoroutine("Destroy");
     }
 
     IEnumerator Drop()
     {
-        yield return new WaitForSeconds(life);
+        yield return new WaitForSeconds(lifeTime);
         isDrop = true;
+        StartCoroutine("Destroy", 0.8f);
     }
 
-    /// <summary>
-    /// 渲染器在相机不可见时销毁游戏物体
-    /// </summary>
-    public void OnBecameInvisible()
+    IEnumerator Destroy(float time)
     {
-        //放入对象池中
+        yield return new WaitForSeconds(time);
         if (myObjectPool != null)
         {
             myObjectPool.PutInObject(gameObject);

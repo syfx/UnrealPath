@@ -67,6 +67,7 @@ public class ObjectPool {
             new_Object = objectList[0];
             objectList.RemoveAt(0);
         }
+        new_Object.SetActive(true);
         return new_Object;
     }
 

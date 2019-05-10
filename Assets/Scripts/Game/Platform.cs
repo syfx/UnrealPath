@@ -5,23 +5,16 @@ using UnityEngine;
 public class Platform : MonoBehaviour {
 
     private SpriteRenderer spriteRenderer;
-    private float life;                               //平台生存周期
+    private float lifeTime;                        //平台生存周期
     private bool isDrop;                          //是否下落
     private float dropSpeed;                   //下落速度
     private float startSpeed;                   //起始速度
     private float acceleratedSpeed;        //加速度
    
-    /// <summary>
-    /// 是否首次被加载
-    /// </summary>
-    public bool IsFirstLoad { get; private set; }
-    
-
     public void Awake()
     {
-        IsFirstLoad = true;
         spriteRenderer = GetComponent<SpriteRenderer>();
-        life = 5;
+        lifeTime = 30;
         isDrop = false;
         startSpeed = 1;
         acceleratedSpeed = 0.2f;
@@ -42,39 +35,31 @@ public class Platform : MonoBehaviour {
     /// <param name="life"></param>
     public void Init(Sprite sprite, float life)
     {
-        if (IsFirstLoad)
-        {
-            IsFirstLoad = false;
-            //切换皮肤
-            spriteRenderer.sprite = sprite;
-            //初始化生存周期
-            this.life = life;
-        }
-    }
-
-    public void OnEnable()
-    {
+        //切换皮肤
+        spriteRenderer.sprite = sprite;
+        //初始化生存周期
+        this.lifeTime = life;
         isDrop = false;
         dropSpeed = startSpeed;
         StartCoroutine("Drop");
     }
+
     public void OnDisable()
     {
         StopCoroutine("Drop");
+        StopCoroutine("Destroy");
     }
 
     IEnumerator Drop()
     {
-        yield return new WaitForSeconds(life);
+        yield return new WaitForSeconds(lifeTime);
         isDrop = true;
+        StartCoroutine("Destroy", 0.8f);
     }
 
-    /// <summary>
-    /// 渲染器在相机不可见时销毁游戏物体
-    /// </summary>
-    public void OnBecameInvisible()
+    IEnumerator Destroy(float time)
     {
-        //放入对象池中
+        yield return new WaitForSeconds(time);
         PoolManager.PlatformPool.PutInObject(gameObject);
     }
 }

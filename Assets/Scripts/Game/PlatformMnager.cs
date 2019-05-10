@@ -59,7 +59,7 @@ public class PlatformMnager : MonoBehaviour {
     /// <summary>
     /// 当前平台的皮肤类型
     /// </summary>
-    private  PlatformSprite platformRender;
+    private  PlatformSprite platformSpriteType;
     private Sprite platformSprite;          //当前平台皮肤
     /// <summary>
     /// 当前平台的对象池
@@ -87,55 +87,52 @@ public class PlatformMnager : MonoBehaviour {
     /// 突刺生成概率
     /// </summary>
     public int SpikeProbability { get; set; }
+    /// <summary>
+    /// 平台存活时间
+    /// </summary>
+    public float PlatformLife { get; set; }
 
-    public void Start()
-    {
-        InitPlatforms();
-    }
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
             EnsurePath();
-        if (Input.GetKeyDown(KeyCode.B))
-            CreatObstract();
     }
-
     /// <summary>
     /// 初始化平台
     /// </summary>
     public void InitPlatforms()
     {
+        EventCenter.AddListener(EventDefine.CreatPlatform, EnsurePath);
         assetManager = AssetManager.GetAssetManager();
         //初始化障碍物生成概率为(1 / 5)
         ObstacleProbability = 5;
         //初始化突刺生成概率为(1 / 4)
         SpikeProbability = 3;
-        //设置当前的使用的平台的皮肤
-        platformRender = GameManager.instance.GameData.NowPlatformSprite;
+        //初始化平台存活时间为3秒
+        PlatformLife = 3;
+        //设置当前的使用的平台的皮肤的类型
+        platformSpriteType = GameManager.instance.GameData.NowPlatformSpriteType;
+        platformSprite = assetManager.platformSpriteSet[platformSpriteType];
         platformPool = PoolManager.PlatformPool;
         spikePool = PoolManager.SpikePool;
         //选择相应的对象池
-        switch (platformRender)
+        switch (platformSpriteType)
         {
             case PlatformSprite.Fire:
                 obstaclePool = PoolManager.FireObstaclePool;
-                platformSprite = assetManager.platformRender[2];
                 break;
             case PlatformSprite.Grass:
                 obstaclePool = PoolManager.GrassObstaclePool;
-                platformSprite = assetManager.platformRender[1];
                 break;
             case PlatformSprite.Ice:
                 obstaclePool = PoolManager.IceObstaclePool;
-                platformSprite = assetManager.platformRender[0];
                 break;
             case PlatformSprite.Normal:
                 obstaclePool = PoolManager.GrassObstaclePool;
-                platformSprite = assetManager.platformRender[3];
                 break;
         }
         //初始化第一个平台生成的位置
-        platformCreatPos = new Vector2(0, -2);
+        platformCreatPos = new Vector2(nextPosX, -2-nextPosY);
         //障碍物的位置保持在当前平台的另一侧
         if (isLeftCreat)
         {
@@ -215,13 +212,15 @@ public class PlatformMnager : MonoBehaviour {
         obj.transform.parent = transform;
         obj.transform.position = platformCreatPos;
         //设置这个平台的皮肤和下落时间
-        obj.GetComponent<Platform>().Init(platformSprite, 3);
+        obj.GetComponent<Platform>().Init(platformSprite, PlatformLife);
         //两边同时生成
         if (isMeanwhileCreat)
         {
             GameObject otherObj = PoolManager.PlatformPool.TakeOutObject();
             otherObj.transform.parent = transform;
             otherObj.transform.position = new Vector2(2 * startPosX - platformCreatPos.x, platformCreatPos.y);
+            //设置这个平台的皮肤和下落时间
+            otherObj.GetComponent<Platform>().Init(platformSprite, PlatformLife);
         }
     }
 
@@ -238,7 +237,7 @@ public class PlatformMnager : MonoBehaviour {
         //保证新生成的障碍物图层在上面
         Obj.GetComponent<SpriteRenderer>().sortingOrder = (obstacleSortingOrder--);
         //设置这个障碍物的对象池和存在时间
-        Obj.GetComponent<Obstacle>().Init(obstaclePool[ran], 3);
+        Obj.GetComponent<Obstacle>().Init(obstaclePool[ran], PlatformLife);
     }
 
     /// <summary>
@@ -250,6 +249,11 @@ public class PlatformMnager : MonoBehaviour {
         Obj.transform.parent = transform;
         Obj.transform.position = new Vector2(2 * startPosX - platformCreatPos.x, platformCreatPos.y + spikeOfferY);
         //设置这个突刺的对象池和存在时间
-        Obj.GetComponent<Obstacle>().Init(spikePool, 3);
+        Obj.GetComponent<Obstacle>().Init(spikePool, PlatformLife);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.RemoveListener(EventDefine.CreatPlatform, EnsurePath);
     }
 }
