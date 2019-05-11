@@ -4,35 +4,43 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-    private Transform target;          //跟随目标
+    private Vector3 offset;                                 // 目标与相机之间的初始偏移量
+    private Vector3 Velocity = Vector3.zero;
     /// <summary>
-    /// 目标与相机之间的初始偏移量
+    /// 相机跟随目标
     /// </summary>
-    private Vector3 offset;
+    public Transform Target { get; set; }
     /// <summary>
     /// 平滑时间
     /// </summary>
     public float smoothTime = 0.3F;
-    private Vector3 Velocity = Vector3.zero;
+    
+    /// <summary>
+    /// 根据初始偏移量重置相机位置
+    /// </summary>
+    public  void Reset()
+    {
+        transform.position = Target.position + offset;
+    }
 
     private void Update()
     {
-        if(target == null && GameObject.FindGameObjectWithTag("Player") != null)
+        if(Target == null && GameObject.FindGameObjectWithTag("Player") != null)
         {
-            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-            offset = transform.position - target.transform.position;
+            Target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+            offset = transform.position - Target.transform.position;
         }
     }
 
     private void FixedUpdate()
     {
-        if (target == null || !GameManager.instance.IsEnd)
+        if (Target == null)
             return;
-        if(target.transform.position.y > transform.position.y - offset.y)
+        if(Target.transform.position.y > transform.position.y - offset.y)
         {
-            float posX = Mathf.SmoothDamp(transform.position.x, offset.x + target.position.x, 
+            float posX = Mathf.SmoothDamp(transform.position.x, offset.x + Target.position.x, 
                 ref Velocity.x, smoothTime);
-            float posY = Mathf.SmoothDamp(transform.position.y, offset.y + target.position.y,
+            float posY = Mathf.SmoothDamp(transform.position.y, offset.y + Target.position.y,
                 ref Velocity.y, smoothTime);
             transform.position = new Vector3(posX, posY, transform.position.z);
         }

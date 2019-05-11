@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatformMnager : MonoBehaviour {
+public class PlatformManger : MonoBehaviour {
 
     /// <summary>
     /// 下一平台生成位置与当前平台位置的水平差值
@@ -16,30 +16,33 @@ public class PlatformMnager : MonoBehaviour {
     /// 突刺到平台中间位置的偏移
     /// </summary>
     public const float spikeOfferY = 0.31f;
+   
+    private Vector2 platformCreatPos;                        // 平台生成的位置
+    private float startPosX;                                          // 两边同时生成平台时起点平台的x坐标
+    private Vector2 obstacleCreatPos;                        // 障碍物生成的位置
+    private int platformCount = 5;                              // 生成的平台数量 
+    private bool isLeftCreat = true;                             // 是否朝左边生成
+    private bool isMeanwhileCreat = false;                // 是否两边同时生成
+    private  PlatformSprite platformSpriteType;         // 当前平台的皮肤类型
+    private Sprite platformSprite;                                //当前平台皮肤
+    private ObjectPool platformPool;                          // 当前平台的对象池
+    private ObjectPool[] obstaclePool;                        // 当前平台障碍物的对象池
+    private ObjectPool spikePool;                               // 地刺障碍物的对象池
+    private int obstacleSortingOrder = 0;                   // 当前生成的障碍物的层级
+    private AssetManager assetManager;                  //资源管理器
+
     /// <summary>
-    /// 平台生成的位置
+    /// 障碍物生成概率
     /// </summary>
-    private Vector2 platformCreatPos;
+    public int ObstacleProbability { get; set; }
     /// <summary>
-    /// 两边同时生成平台时起点平台的x坐标
+    /// 突刺生成概率
     /// </summary>
-    private float startPosX;
+    public int SpikeProbability { get; set; }
     /// <summary>
-    /// 障碍物生成的位置
+    /// 平台存活时间
     /// </summary>
-    private Vector2 obstacleCreatPos;
-    /// <summary>
-    /// 生成的平台数量
-    /// </summary>
-    private int platformCount = 5;
-    /// <summary>
-    /// 是否朝左边生成
-    /// </summary>
-    private bool isLeftCreat = true;
-    /// <summary>
-    /// 是否两边同时生成
-    /// </summary>
-    private bool isMeanwhileCreat = false;
+    public float PlatformLife { get; set; }
     /// <summary>
     /// 一次平台生成时的最大随机数量
     /// </summary>
@@ -56,60 +59,32 @@ public class PlatformMnager : MonoBehaviour {
         }
     }
     private int maxCountOnce = 5;
-    /// <summary>
-    /// 当前平台的皮肤类型
-    /// </summary>
-    private  PlatformSprite platformSpriteType;
-    private Sprite platformSprite;          //当前平台皮肤
-    /// <summary>
-    /// 当前平台的对象池
-    /// </summary>
-    private ObjectPool platformPool;
-    /// <summary>
-    /// 当前平台障碍物的对象池
-    /// </summary>
-    private ObjectPool[] obstaclePool;
-    /// <summary>
-    /// 地刺障碍物的对象池
-    /// </summary>
-    private ObjectPool spikePool;
-    /// <summary>
-    /// 当前生成的障碍物的层级
-    /// </summary>
-    private int obstacleSortingOrder = 0;
-    private AssetManager assetManager;
 
-    /// <summary>
-    /// 障碍物生成概率
-    /// </summary>
-    public int ObstacleProbability { get; set; }
-    /// <summary>
-    /// 突刺生成概率
-    /// </summary>
-    public int SpikeProbability { get; set; }
-    /// <summary>
-    /// 平台存活时间
-    /// </summary>
-    public float PlatformLife { get; set; }
-
-    public void Update()
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            EnsurePath();
+        //添加生成平台事件监听者
+        EventCenter.AddListener(EventDefine.CreatPlatform, EnsurePath);
+        //拿到资源管理类
+        assetManager = AssetManager.GetAssetManager();
     }
+
     /// <summary>
     /// 初始化平台
     /// </summary>
-    public void InitPlatforms()
+    public void Init()
     {
-        EventCenter.AddListener(EventDefine.CreatPlatform, EnsurePath);
-        assetManager = AssetManager.GetAssetManager();
+        //初始平台生成个数为5
+        platformCount = 5;
         //初始化障碍物生成概率为(1 / 5)
         ObstacleProbability = 5;
         //初始化突刺生成概率为(1 / 4)
         SpikeProbability = 3;
         //初始化平台存活时间为3秒
-        PlatformLife = 3;
+        PlatformLife = 30;
+        //是否朝左侧生成
+        isLeftCreat = true;
+        //是否两边同时生成
+        isMeanwhileCreat = false;
         //设置当前的使用的平台的皮肤的类型
         platformSpriteType = GameManager.instance.GameData.NowPlatformSpriteType;
         platformSprite = assetManager.platformSpriteSet[platformSpriteType];
@@ -132,7 +107,7 @@ public class PlatformMnager : MonoBehaviour {
                 break;
         }
         //初始化第一个平台生成的位置
-        platformCreatPos = new Vector2(nextPosX, -2-nextPosY);
+        platformCreatPos = new Vector2(nextPosX, -2 - nextPosY);
         //障碍物的位置保持在当前平台的另一侧
         if (isLeftCreat)
         {
@@ -250,6 +225,39 @@ public class PlatformMnager : MonoBehaviour {
         Obj.transform.position = new Vector2(2 * startPosX - platformCreatPos.x, platformCreatPos.y + spikeOfferY);
         //设置这个突刺的对象池和存在时间
         Obj.GetComponent<Obstacle>().Init(spikePool, PlatformLife);
+    }
+
+   /// <summary>
+   /// 销毁所用平台
+   /// </summary>
+   /// <param name="isTureDestroy">是否整整销毁，为false时只是禁用</param>
+    public void DestroyAllPlatForm(bool isTureDestroy)
+    {
+        if (isTureDestroy)
+        {
+            //销毁所有平台
+            for(int i = 0; i < transform.childCount; ++i)
+            {
+                Destroy(transform.GetChild(i));
+            }
+        }
+        else
+        {
+            //将所平台放入对象池
+            for (int i = 0; i < transform.childCount; ++i)
+            {
+                if (transform.GetChild(i).gameObject.activeSelf == false)
+                    continue;
+                if(transform.GetChild(i).tag == "Platform")
+                {
+                    transform.GetChild(i).GetComponent<Platform>().Destroy(0);
+                }
+                if (transform.GetChild(i).tag == "Obstacle")
+                {
+                    transform.GetChild(i).GetComponent<Obstacle>().Destroy(0);
+                }
+            }
+        }
     }
 
     private void OnDisable()

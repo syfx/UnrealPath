@@ -78,6 +78,7 @@ public class AssetManager : ScriptableObject {
     {
         public List<PlayerSprite> spriteType = new List<PlayerSprite>();
         public List<Sprite> sprite = new List<Sprite>();
+        public List<Color> spriteColor = new List<Color>();
 
         public Sprite this[PlayerSprite type]
         {
@@ -99,8 +100,21 @@ public class AssetManager : ScriptableObject {
                 }
             }
         }
-        //public PlayerSprite spriteType;
-        //public Sprite sprite;
+        /// <summary>
+        /// 获取当前皮肤的主色调
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Color GetSpriteColor(PlayerSprite type)
+        {
+            int index = spriteType.IndexOf(type);
+            if (index >= 0 && index < sprite.Count)
+            {
+                return spriteColor[index];
+            }
+            //默认颜色
+            return new Color(170, 51, 17);
+        }
     }
 
     [Tooltip("背景皮肤列表")]
@@ -112,4 +126,6 @@ public class AssetManager : ScriptableObject {
 
     [Tooltip("玩家预制")]
     public GameObject playerPrefab;
+    [Tooltip("玩家死亡粒子特效")]
+    public GameObject deathEffectPrefab;
 }

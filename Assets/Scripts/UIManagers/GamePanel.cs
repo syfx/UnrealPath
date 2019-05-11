@@ -47,7 +47,7 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnReStartButtonClick()
     {
-        
+        GameManager.instance.ReStartGame();
     }
 
     /// <summary>
@@ -55,7 +55,10 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnPlayButtonClick()
     {
-        throw new NotImplementedException();
+        //暂停游戏
+        Time.timeScale = 1;
+        btn_Play.gameObject.SetActive(false);
+        btn_Pause.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -63,7 +66,10 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnPauseButtonClick()
     {
-        throw new NotImplementedException();
+        //暂停游戏
+        Time.timeScale = 0;
+        btn_Pause.gameObject.SetActive(false);
+        btn_Play.gameObject.SetActive(true);
     }
 
     /// <summary>

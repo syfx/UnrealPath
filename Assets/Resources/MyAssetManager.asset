@@ -32,5 +32,12 @@ MonoBehaviour:
     - {fileID: 21300006, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300010, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300014, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
+    spriteColor:
+    - {r: 0.6666667, g: 0.2, b: 0.06666667, a: 1}
+    - {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - {r: 0.6, g: 0.6, b: 0.26666668, a: 1}
+    - {r: 0.40784314, g: 0.6666667, b: 0.46666667, a: 1}
   playerPrefab: {fileID: 1068314886056120, guid: 4e00ccfb83bca414e942a5499d55b550,
+    type: 2}
+  deathEffectPrefab: {fileID: 1183292757561966, guid: adaa12c832d564840b4525ff1763c430,
     type: 2}

@@ -43,21 +43,29 @@ public class Platform : MonoBehaviour {
         dropSpeed = startSpeed;
         StartCoroutine("Drop");
     }
+    /// <summary>
+    /// 销毁当前平台
+    /// </summary>
+    /// <param name="time">多少秒后销毁</param>
+    public void Destroy(float time)
+    {
+        StartCoroutine("DestroyPlatForm", time);
+    }
 
-    public void OnDisable()
+    private void OnDisable()
     {
         StopCoroutine("Drop");
-        StopCoroutine("Destroy");
+        StopCoroutine("DestroyPlatForm");
     }
 
     IEnumerator Drop()
     {
         yield return new WaitForSeconds(lifeTime);
         isDrop = true;
-        StartCoroutine("Destroy", 0.8f);
+        StartCoroutine("DestroyPlatForm", 0.8f);
     }
 
-    IEnumerator Destroy(float time)
+    IEnumerator DestroyPlatForm(float time)
     {
         yield return new WaitForSeconds(time);
         PoolManager.PlatformPool.PutInObject(gameObject);

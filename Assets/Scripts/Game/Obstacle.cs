@@ -43,21 +43,29 @@ public class Obstacle : MonoBehaviour {
         dropSpeed = startSpeed;
         StartCoroutine("Drop");
     }
+    /// <summary>
+    /// 销毁障碍物
+    /// </summary>
+    /// <param name="time">多少秒后销毁</param>
+    public void Destroy(float time)
+    {
+        StartCoroutine("DestroyObstacle", time);
+    }
 
-    public void OnDisable()
+    private void OnDisable()
     {
         StopCoroutine("Drop");
-        StopCoroutine("Destroy");
+        StopCoroutine("DestroyObstacle");
     }
 
     IEnumerator Drop()
     {
         yield return new WaitForSeconds(lifeTime);
         isDrop = true;
-        StartCoroutine("Destroy", 0.8f);
+        StartCoroutine("DestroyObstacle", 0.8f);
     }
 
-    IEnumerator Destroy(float time)
+    IEnumerator DestroyObstacle(float time)
     {
         yield return new WaitForSeconds(time);
         if (myObjectPool != null)

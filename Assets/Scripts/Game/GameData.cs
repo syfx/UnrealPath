@@ -8,35 +8,16 @@ using UnityEngine;
 
 [SerializeField]
 public class GameData {
-    private BgSprite nowBgSpriteType;
     /// <summary>
-    /// 当前使用的游戏中背景
+    /// 当前使用的游戏中背景皮肤
     /// </summary>
-    public BgSprite NowBgSpriteType
-    {
-        get
-        {
-            return nowBgSpriteType;
-        }
-        set
-        {
-            nowBgSpriteType = value;
-        }
-    }
-
-    private PlatformSprite nowPlatformSpriteType;
+    public BgSprite NowBgSpriteType { get; set; }
     /// <summary>
-    /// 当前使用的台阶的类型
+    /// 当前使用的台阶的皮肤类型
     /// </summary>
-    public PlatformSprite NowPlatformSpriteType
-    {
-        get
-        {
-            return nowPlatformSpriteType;
-        }
-        set
-        {
-            nowPlatformSpriteType = value;
-        }
-    }
+    public PlatformSprite NowPlatformSpriteType { get; set; }
+    /// <summary>
+    /// 当前使用的主角的皮肤类型
+    /// </summary>
+    public PlayerSprite NowPlayerSpriteType { get; set; }
 }

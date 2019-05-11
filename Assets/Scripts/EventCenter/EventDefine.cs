@@ -2,5 +2,6 @@
 {
     //事件码, ADD DEFINE: 
     ShowGamePanel,
-    CreatPlatform
+    CreatPlatform,
+    DestroyPlayer
 }

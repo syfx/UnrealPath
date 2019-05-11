@@ -8,7 +8,7 @@ public class BgController : MonoBehaviour {
     private AssetManager myAssetManager;            //资源管理器
     private BgSprite bgSpriteType;                            //当前游戏背景图片
 
-    public void InitBg()
+    public void Init()
     {
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         myAssetManager = AssetManager.GetAssetManager();
