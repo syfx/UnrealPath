@@ -10,8 +10,10 @@ public class PlayerController : MonoBehaviour {
     private bool isJump = false;                                                   // 是否正在跳跃
     private Vector2 nextLeftPlatformPos;                                    // 下一个左边平台的位置
     private Vector2 nextRightPlatformPos;                                 // 下一个右边平台的位置
+    private float lastPlatformPlayerPosY;                                     //上一个平台上时主角的y轴坐标
     private bool isMoveLeft;                                                        //是否向左边移动       
     private SpriteRenderer spriteRenderer;                                 //渲染器
+    private BoxCollider2D boxCollider;                                        //碰撞器
 
     /// <summary>
     /// 初始化玩家
@@ -20,11 +22,20 @@ public class PlayerController : MonoBehaviour {
     {
         //设置初始位置
         transform.position = initPos;
-        if (gameObject.activeSelf == false)
-            gameObject.SetActive(true);
+        lastPlatformPlayerPosY = -32767;
         if (spriteRenderer == null)
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+        if(boxCollider == null)
+        {
+            boxCollider = GetComponent<BoxCollider2D>();
+        }
+        if (gameObject.activeSelf == false)
+        {
+            gameObject.SetActive(true);
+            spriteRenderer.sortingLayerName = "Player";
+            boxCollider.isTrigger = false;
         }
         //初始化皮肤
         spriteRenderer.sprite = sprite;
@@ -76,6 +87,13 @@ public class PlayerController : MonoBehaviour {
                 isMoveLeft = false;
             }
             Jump();
+            lastPlatformPlayerPosY = transform.position.y;
+        }
+
+        //判断是否坠落
+        if(transform.position.y < lastPlatformPlayerPosY)
+        {
+            PlayerDrop();
         }
     }
     //跳跃
@@ -94,6 +112,16 @@ public class PlayerController : MonoBehaviour {
         //广播事件码以生成新的平台
         EventCenter.Broadcast(EventDefine.CreatPlatform);
     }
+    /// <summary>
+    /// 玩家坠落
+    /// </summary>
+    private void PlayerDrop()
+    {
+        //将玩家渲染到障碍物后面
+        spriteRenderer.sortingLayerName = "DeathPlayer";
+        //设为触发器
+        boxCollider.isTrigger = true;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -110,14 +138,15 @@ public class PlayerController : MonoBehaviour {
         //跳到障碍物或者突刺上
         if (collision.collider.tag == "Obstacle")
         {
-            Destroy(false);
+            DestroyPlayer(false);
+            EventCenter.Broadcast(EventDefine.DestroyPlayer);
         }
     }
     /// <summary>
     /// 销毁玩家
     /// </summary>
     /// <param name="isTrueDestroy">是否真正销毁</param>
-    public void Destroy(bool isTrueDestroy)
+    public void DestroyPlayer(bool isTrueDestroy)
     {
         if (isTrueDestroy)
         {
@@ -127,6 +156,13 @@ public class PlayerController : MonoBehaviour {
         {
             gameObject.SetActive(false);
         }
-        EventCenter.Broadcast(EventDefine.DestroyPlayer);
+    }
+    /// <summary>
+    /// 玩家跌落死亡时，当玩家消失在相机内时销毁玩家
+    /// </summary>
+    private void OnBecameInvisible()
+    {
+        //销毁玩家
+        DestroyPlayer(false);
     }
 }
