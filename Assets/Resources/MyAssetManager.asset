@@ -19,15 +19,15 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 274864b118ac4f54589e32e7035cd77f, type: 3}
     - {fileID: 21300000, guid: 81cb795749aefac4ea7663bc3f7f71fb, type: 3}
   platformSpriteSet:
-    spriteType: 03000000020000000100000000000000
+    spriteType: 00000000020000000300000001000000
     sprite:
-    - {fileID: 21300002, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
-    - {fileID: 21300012, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
-    - {fileID: 21300004, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
     - {fileID: 21300000, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+    - {fileID: 21300012, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+    - {fileID: 21300002, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+    - {fileID: 21300004, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
   playerSpriteSet:
     spriteType: 00000000010000000200000003000000
-    sprite:
+    sprites:
     - {fileID: 21300002, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300006, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300010, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
@@ -37,7 +37,14 @@ MonoBehaviour:
     - {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - {r: 0.6, g: 0.6, b: 0.26666668, a: 1}
     - {r: 0.40784314, g: 0.6666667, b: 0.46666667, a: 1}
+    showSprites:
+    - {fileID: 21300000, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
+    - {fileID: 21300004, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
+    - {fileID: 21300008, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
+    - {fileID: 21300012, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
   playerPrefab: {fileID: 1068314886056120, guid: 4e00ccfb83bca414e942a5499d55b550,
     type: 2}
   deathEffectPrefab: {fileID: 1183292757561966, guid: adaa12c832d564840b4525ff1763c430,
+    type: 2}
+  childPrefab: {fileID: 1120001345139320, guid: d19036c8081e3a8479650ef38a59605e,
     type: 2}

@@ -43,14 +43,23 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Game
+  - name: GameBg
     uniqueID: 3937064889
+    locked: 0
+  - name: DeadPlayer
+    uniqueID: 3672147599
+    locked: 0
+  - name: Platform
+    uniqueID: 2997943353
     locked: 0
   - name: Obstacle
     uniqueID: 2370709687
     locked: 0
   - name: Player
     uniqueID: 188055223
+    locked: 0
+  - name: LeadGameBg
+    uniqueID: 2177422189
     locked: 0
   - name: UI
     uniqueID: 1030827015

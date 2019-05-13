@@ -62,10 +62,13 @@ public class PlatformManger : MonoBehaviour {
 
     private void Awake()
     {
-        //添加生成平台事件监听者
-        EventCenter.AddListener(EventDefine.CreatPlatform, EnsurePath);
         //拿到资源管理类
         assetManager = AssetManager.GetAssetManager();
+    }
+    private void OnEnable()
+    {
+        //添加生成平台事件监听者
+        EventCenter.AddListener(EventDefine.CreatPlatform, EnsurePath);
     }
 
     /// <summary>
@@ -73,6 +76,10 @@ public class PlatformManger : MonoBehaviour {
     /// </summary>
     public void Init()
     {
+        if (gameObject.activeSelf == false)
+        {
+            gameObject.SetActive(true);
+        }
         //初始平台生成个数为5
         platformCount = 5;
         //初始化障碍物生成概率为(1 / 5)
@@ -259,7 +266,6 @@ public class PlatformManger : MonoBehaviour {
             }
         }
     }
-
     private void OnDisable()
     {
         EventCenter.RemoveListener(EventDefine.CreatPlatform, EnsurePath);

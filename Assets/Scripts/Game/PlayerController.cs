@@ -31,12 +31,9 @@ public class PlayerController : MonoBehaviour {
         {
             boxCollider = GetComponent<BoxCollider2D>();
         }
-        if (gameObject.activeSelf == false)
-        {
-            gameObject.SetActive(true);
-            spriteRenderer.sortingLayerName = "Player";
-            boxCollider.isTrigger = false;
-        }
+        gameObject.SetActive(true);
+        spriteRenderer.sortingLayerName = "Player";
+        boxCollider.isTrigger = false;
         //初始化皮肤
         spriteRenderer.sprite = sprite;
     }
@@ -118,7 +115,7 @@ public class PlayerController : MonoBehaviour {
     private void PlayerDrop()
     {
         //将玩家渲染到障碍物后面
-        spriteRenderer.sortingLayerName = "DeathPlayer";
+        spriteRenderer.sortingLayerName = "DeadPlayer";
         //设为触发器
         boxCollider.isTrigger = true;
     }
@@ -138,15 +135,15 @@ public class PlayerController : MonoBehaviour {
         //跳到障碍物或者突刺上
         if (collision.collider.tag == "Obstacle")
         {
-            DestroyPlayer(false);
-            EventCenter.Broadcast(EventDefine.DestroyPlayer);
+            DestroyPlayer(false, true);
         }
     }
     /// <summary>
     /// 销毁玩家
     /// </summary>
     /// <param name="isTrueDestroy">是否真正销毁</param>
-    public void DestroyPlayer(bool isTrueDestroy)
+    /// <param name="playEffect">是否播放死亡动画</param>
+    public void DestroyPlayer(bool isTrueDestroy, bool isPlayEffect)
     {
         if (isTrueDestroy)
         {
@@ -156,6 +153,12 @@ public class PlayerController : MonoBehaviour {
         {
             gameObject.SetActive(false);
         }
+        if (isPlayEffect)
+        {
+            EventCenter.Broadcast(EventDefine.PlayerDeath);
+        }
+        //玩家死亡一秒后结束当前游戏
+        GameManager.instance.GameOver(1);
     }
     /// <summary>
     /// 玩家跌落死亡时，当玩家消失在相机内时销毁玩家
@@ -163,6 +166,6 @@ public class PlayerController : MonoBehaviour {
     private void OnBecameInvisible()
     {
         //销毁玩家
-        DestroyPlayer(false);
+        DestroyPlayer(false, true);
     }
 }

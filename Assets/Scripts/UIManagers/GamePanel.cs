@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class GamePanel : MonoBehaviour
 {
-    private Text txt_RemCount;             //获得的钻石数
-    private Text txt_Score;                     //得分
-    private Button btn_Pause;               //暂停按钮
-    private Button btn_Play;                  //开始按钮
-    private Button btn_ReStart;             //重新开始按钮
+    private Text txtRemCount;             //获得的钻石数
+    private Text txtScore;                     //得分
+    private Button btnPause;               //暂停按钮
+    private Button btnPlay;                  //开始按钮
+    private Button btnReturn;             //重新开始按钮
 
     public void Awake()
     {
@@ -22,16 +22,16 @@ public class GamePanel : MonoBehaviour
     {
         //初始时设为禁用状态
         gameObject.SetActive(false);
-        txt_RemCount = transform.Find("Gem/txtGemCount").GetComponent<Text>();
-        txt_Score = transform.Find("txtScore").GetComponent<Text>();
-        btn_Pause = transform.Find("Buttons/btnPause").GetComponent<Button>();
-        btn_Pause.onClick.AddListener(OnPauseButtonClick);
-        btn_Play = transform.Find("Buttons/btnPlay").GetComponent<Button>();
+        txtRemCount = transform.Find("Gem/txtGemCount").GetComponent<Text>();
+        txtScore = transform.Find("txtScore").GetComponent<Text>();
+        btnPause = transform.Find("Buttons/btnPause").GetComponent<Button>();
+        btnPause.onClick.AddListener(OnPauseButtonClick);
+        btnPlay = transform.Find("Buttons/btnPlay").GetComponent<Button>();
         //初始时禁用开始按钮
-        btn_Play.gameObject.SetActive(false);
-        btn_Play.onClick.AddListener(OnPlayButtonClick);
-        btn_ReStart = transform.Find("Buttons/btnReStart").GetComponent<Button>();
-        btn_ReStart.onClick.AddListener(OnReStartButtonClick);
+        btnPlay.gameObject.SetActive(false);
+        btnPlay.onClick.AddListener(OnPlayButtonClick);
+        btnReturn = transform.Find("Buttons/btnReturn").GetComponent<Button>();
+        btnReturn.onClick.AddListener(OnReStartButtonClick);
     }
 
     /// <summary>
@@ -43,11 +43,11 @@ public class GamePanel : MonoBehaviour
     }
 
     /// <summary>
-    /// 点击重新开始按钮时调用
+    /// 返回到主界面
     /// </summary>
     private void OnReStartButtonClick()
     {
-        GameManager.instance.ReStartGame();
+        //GameManager.instance.RestartGame();
     }
 
     /// <summary>
@@ -57,8 +57,8 @@ public class GamePanel : MonoBehaviour
     {
         //暂停游戏
         Time.timeScale = 1;
-        btn_Play.gameObject.SetActive(false);
-        btn_Pause.gameObject.SetActive(true);
+        btnPlay.gameObject.SetActive(false);
+        btnPause.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -68,8 +68,8 @@ public class GamePanel : MonoBehaviour
     {
         //暂停游戏
         Time.timeScale = 0;
-        btn_Pause.gameObject.SetActive(false);
-        btn_Play.gameObject.SetActive(true);
+        btnPause.gameObject.SetActive(false);
+        btnPlay.gameObject.SetActive(true);
     }
 
     /// <summary>

@@ -13,6 +13,8 @@ public class BgController : MonoBehaviour {
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         myAssetManager = AssetManager.GetAssetManager();
         bgSpriteType = GameManager.instance.GameData.NowBgSpriteType;
+        //设置背景渲染层级
+        SetBgSortingLayer("GameBg");
         //设置游戏背景
         SetBackground();
     }
@@ -22,25 +24,14 @@ public class BgController : MonoBehaviour {
     /// </summary>
     private void SetBackground()
     {
-
         mySpriteRenderer.sprite = myAssetManager.bgSpriteSet[bgSpriteType];
-        //switch (NowBgSprite)
-        //{
-        //    case BgSprite.Fire:
-        //        mySpriteRenderer.sprite = myAssetManager.gameBgSprite[1];
-        //        break;
-        //    case BgSprite.Grass:
-        //        mySpriteRenderer.sprite = myAssetManager.gameBgSprite[2];
-        //        break;
-        //    case BgSprite.Ice:
-        //        mySpriteRenderer.sprite = myAssetManager.gameBgSprite[0];
-        //        break;
-        //    case BgSprite.Normal:
-        //        mySpriteRenderer.sprite = myAssetManager.gameBgSprite[3];
-        //        break;
-        //    default :
-        //        mySpriteRenderer.sprite = myAssetManager.gameBgSprite[3];
-        //        break;
-        //}
+    }
+    /// <summary>
+    /// 设置游戏背景显示层级
+    /// </summary>
+    /// <param name="layer">层级名称</param>
+    public void SetBgSortingLayer(string layer)
+    {
+        mySpriteRenderer.sortingLayerName = layer;
     }
 }

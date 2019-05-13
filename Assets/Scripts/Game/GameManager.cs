@@ -25,13 +25,14 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     public bool IsEnd { get; set; }
 
-
     private void Awake()
     {
         instance = GetComponent<GameManager>();
         InitGameData();
     }
-    
+    /// <summary>
+    /// 初始化游戏
+    /// </summary>
     private void InitGameData()
     {
         assetManager = AssetManager.GetAssetManager();
@@ -50,10 +51,14 @@ public class GameManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// 点击开始按钮时调用
+    /// 开始游戏
     /// </summary>
     public void StartGame()
     {
+        //停止所有协程
+        StopAllCoroutines();
+        //销毁当前平台
+        platformMnager.DestroyAllPlatForm(false);
         IsStart = true;
         IsEnd = false;
         //初始化背景
@@ -66,22 +71,42 @@ public class GameManager : MonoBehaviour {
         {
             platformMnager.Init();
         }
-        //生成玩家
-        playerManager.Init();
+        //初始化主角
+        if(playerManager != null)
+        {
+            playerManager.Init();
+            //相机跟随主角
+            Camera.main.GetComponent<CameraFollow>().Reset();
+        }
     }
     /// <summary>
     /// 重新开始游戏
     /// </summary>
-    public void ReStartGame()
+    public void RestartGame()
     {
+        //销毁玩家
+        playerManager.DeadPlayer();
+        //结束未结束的协程
+        StopAllCoroutines();
+        //结束游戏
+        GameOver(0);
+        //开始游戏
+        StartGame();
+    }
+    /// <summary>
+    /// 结束游戏
+    /// </summary>
+    /// <param name="time">多少秒后执行</param>
+    public void GameOver(float time)
+    {
+        StartCoroutine("DelayGameOver", time);
+    }
+    IEnumerator DelayGameOver(float time)
+    {
+        yield return new WaitForSeconds(time);
+        //设置游戏背景层级
+        bgController.SetBgSortingLayer("LeadGameBg");
         //销毁当前平台
         platformMnager.DestroyAllPlatForm(false);
-        IsStart = true;
-        IsEnd = false;
-        bgController.Init();
-        platformMnager.Init();
-        playerManager.Init();
-        //相机跟随主角
-        Camera.main.GetComponent<CameraFollow>().Reset();
     }
 }

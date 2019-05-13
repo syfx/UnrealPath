@@ -77,17 +77,26 @@ public class AssetManager : ScriptableObject {
     public class PlayerSpriteSet
     {
         public List<PlayerSprite> spriteType = new List<PlayerSprite>();
-        public List<Sprite> sprite = new List<Sprite>();
+        public List<Sprite> sprites = new List<Sprite>();
         public List<Color> spriteColor = new List<Color>();
+        /// <summary>
+        /// 用来展示皮肤的图片
+        /// </summary>
+        public List<Sprite> showSprites = new List<Sprite>();
 
+        /// <summary>
+        /// 根据皮肤类型，返回皮肤
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public Sprite this[PlayerSprite type]
         {
             get
             {
                 int index = spriteType.IndexOf(type);
-                if(index >= 0 && index < sprite.Count)
+                if(index >= 0 && index < sprites.Count)
                 {
-                    return sprite[index];
+                    return sprites[index];
                 }
                 return null;
             }
@@ -96,8 +105,29 @@ public class AssetManager : ScriptableObject {
                 if(value != null)
                 {
                     spriteType.Add(type);
-                    sprite.Add(value);
+                    sprites.Add(value);
                 }
+            }
+        }
+        /// <summary>
+        /// 返回皮肤类型
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <returns></returns>
+        public PlayerSprite this[Sprite sprite]
+        {
+            get
+            {
+                int index = showSprites.IndexOf(sprite);
+                if (index <= 0 || index >= spriteType.Count)
+                {
+                    index = sprites.IndexOf(sprite);
+                }
+                if (index >= 0 && index < spriteType.Count)
+                {
+                    return spriteType[index];
+                }
+                return PlayerSprite.Girl;
             }
         }
         /// <summary>
@@ -108,12 +138,26 @@ public class AssetManager : ScriptableObject {
         public Color GetSpriteColor(PlayerSprite type)
         {
             int index = spriteType.IndexOf(type);
-            if (index >= 0 && index < sprite.Count)
+            if (index >= 0 && index < sprites.Count)
             {
                 return spriteColor[index];
             }
             //默认颜色
             return new Color(170, 51, 17);
+        }
+        /// <summary>
+        /// 根据类型选择展示皮肤的图片
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Sprite GetShowSprite(PlayerSprite type)
+        {
+            int index = spriteType.IndexOf(type);
+            if (index >= 0 && index < sprites.Count)
+            {
+                return showSprites[index];
+            }
+            return null;
         }
     }
 
@@ -128,4 +172,6 @@ public class AssetManager : ScriptableObject {
     public GameObject playerPrefab;
     [Tooltip("玩家死亡粒子特效")]
     public GameObject deathEffectPrefab;
+    [Tooltip("用来选择皮肤的显示器的预制")]
+    public GameObject childPrefab;
 }

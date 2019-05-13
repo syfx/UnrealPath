@@ -20,7 +20,10 @@ public class CameraFollow : MonoBehaviour {
     /// </summary>
     public  void Reset()
     {
-        transform.position = Target.position + offset;
+        if(Target != null)
+        {
+            transform.position = Target.position + offset;
+        }
     }
 
     private void Update()

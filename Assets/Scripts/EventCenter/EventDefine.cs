@@ -3,5 +3,8 @@
     //事件码, ADD DEFINE: 
     ShowGamePanel,
     CreatPlatform,
-    DestroyPlayer
+    PlayerDeath,
+    SelectScript,
+    SelectFigure,
+    SelectPlatform
 }

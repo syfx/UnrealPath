@@ -51,20 +51,16 @@ public class Platform : MonoBehaviour {
     {
         StartCoroutine("DestroyPlatForm", time);
     }
-
     private void OnDisable()
     {
-        StopCoroutine("Drop");
-        StopCoroutine("DestroyPlatForm");
+        StopAllCoroutines();
     }
-
     IEnumerator Drop()
     {
         yield return new WaitForSeconds(lifeTime);
         isDrop = true;
         StartCoroutine("DestroyPlatForm", 0.8f);
     }
-
     IEnumerator DestroyPlatForm(float time)
     {
         yield return new WaitForSeconds(time);
