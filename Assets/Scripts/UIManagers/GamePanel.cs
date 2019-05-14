@@ -47,7 +47,9 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnReStartButtonClick()
     {
-        //GameManager.instance.RestartGame();
+        GameManager.instance.GameOver(0);
+        gameObject.SetActive(false);
+        EventCenter.Broadcast(EventDefine.OpenStartPanel);
     }
 
     /// <summary>
@@ -70,13 +72,5 @@ public class GamePanel : MonoBehaviour
         Time.timeScale = 0;
         btnPause.gameObject.SetActive(false);
         btnPlay.gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// 销毁时移除监听
-    /// </summary>
-    public void OnDestroy()
-    {
-        EventCenter.RemoveListener(EventDefine.ShowGamePanel, Show);
     }
 }

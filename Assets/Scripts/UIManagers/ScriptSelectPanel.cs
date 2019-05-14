@@ -16,6 +16,7 @@ public class ScriptSelectPanel : MonoBehaviour {
     private List<Sprite> sprites;                       //皮肤集合
     private int index = 0;                                  //当前展示的皮肤的索引值
     private int lastIndex = 0;                            //上一帧展示的皮肤的索引值
+    private int lastSelectIndex = 0;                  //上次选择的皮肤的序号
     private int itemCount = 0;                         //当前用来显示皮肤的格子数
     /// <summary>
     /// 选择的皮肤
@@ -61,6 +62,7 @@ public class ScriptSelectPanel : MonoBehaviour {
         }
         //皮肤显示
         SetItemSizeAndPos();
+        SelectSprite();
     }
 
     private void Update()
@@ -95,7 +97,18 @@ public class ScriptSelectPanel : MonoBehaviour {
     /// </summary>
     public void SelectSprite()
     {
-        SelectiveSprite = sprites[index];
+        if (index >= 0 && index < itemCount)
+        {
+            SelectiveSprite = sprites[index];
+            print(index + " " + lastSelectIndex);
+            //高亮显示选中的皮肤
+            transform.GetChild(index).GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f);
+            //上个选中的皮肤变成灰色
+            if (lastSelectIndex != index)
+            {
+                transform.GetChild(lastSelectIndex).GetChild(0).GetComponent<Image>().color = new Color(0.7f, 0.7f, 0.7f);
+            }
+        }
+        lastSelectIndex = index;
     }
-
 }

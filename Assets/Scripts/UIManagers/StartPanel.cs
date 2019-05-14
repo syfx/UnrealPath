@@ -10,11 +10,13 @@ public class StartPanel : MonoBehaviour
     private Button btn_Figure;                 //选择人物按钮
     private Button btn_Rank;                   //查看排行榜按钮
     private Button btn_Sound;                //打开/关闭声音按钮
-    private Button btnExit;                       //退出游戏
-    private Button btnPlatform;               //平台皮肤
+    private Button btnExit;                      //退出游戏
+    private Button btnPlatform;              //平台皮肤
 
     public void Awake()
     {
+        EventCenter.AddListener(EventDefine.OpenStartPanel, OpenStartPanel);
+        EventCenter.AddListener(EventDefine.CloseStartPanel, CloseStartPanel);
         Init();
     }
 
@@ -51,7 +53,7 @@ public class StartPanel : MonoBehaviour
         //打开游戏面板
         EventCenter.Broadcast(EventDefine.ShowGamePanel);
         //隐藏自己
-        gameObject.SetActive(false);
+        CloseStartPanel();
         //开始游戏
         GameManager.instance.StartGame();
     }
@@ -86,5 +88,19 @@ public class StartPanel : MonoBehaviour
     {
         //TODO
 
+    }
+    /// <summary>
+    /// 打开开始游戏面板
+    /// </summary>
+    private void OpenStartPanel()
+    {
+        gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// 关闭开始游戏面板
+    /// </summary>
+    private void CloseStartPanel()
+    {
+        gameObject.SetActive(false);
     }
 }

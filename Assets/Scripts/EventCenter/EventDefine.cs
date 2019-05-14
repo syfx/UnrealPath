@@ -6,5 +6,7 @@
     PlayerDeath,
     SelectScript,
     SelectFigure,
-    SelectPlatform
+    SelectPlatform,
+    OpenStartPanel,
+    CloseStartPanel
 }

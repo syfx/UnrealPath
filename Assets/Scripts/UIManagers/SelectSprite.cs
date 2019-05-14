@@ -11,6 +11,7 @@ public class SelectSprite : MonoBehaviour {
     private ScriptSelectPanel platformPanel;              //平台选择面板
     private ScrollRect scrollRect;                                 //滑动组件
     private Button btnSelectButton;                           //选择按钮
+    private Button btnReturn;                                     //返回按钮
     private Text GemNum;                                          //钻石数量
 
     private void Awake()
@@ -28,6 +29,8 @@ public class SelectSprite : MonoBehaviour {
 
         btnSelectButton = transform.Find("Select").GetComponent<Button>();
         btnSelectButton.onClick.AddListener(OnSelectButtonClick);
+        btnReturn = transform.Find("btnReturn").GetComponent<Button>();
+        btnReturn.onClick.AddListener(OnReturnButtonClick);
         GemNum = transform.Find("Gem/txtGemNum").GetComponent<Text>();
         //GemNum.text = ;
 
@@ -35,6 +38,24 @@ public class SelectSprite : MonoBehaviour {
         EventCenter.AddListener(EventDefine.SelectPlatform, OnPlatformSelectButtonClick);
         //初始化时隐藏
         gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 点击返回按钮
+    /// </summary>
+    private void OnReturnButtonClick()
+    {
+        gameObject.SetActive(false);
+        //显示开始面板
+        EventCenter.Broadcast(EventDefine.OpenStartPanel);
+        if (figurePanel == true)
+        {
+            figurePanel.gameObject.SetActive(false);
+        }
+        if (platformPanel == true)
+        {
+            platformPanel.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -58,6 +79,8 @@ public class SelectSprite : MonoBehaviour {
     public void OnFigureSelectButtonClick()
     {
         gameObject.SetActive(true);
+        //隐藏开始面板
+        EventCenter.Broadcast(EventDefine.CloseStartPanel);
         scrollRect.content = figurePanel.GetComponent<RectTransform>();
         figurePanel.gameObject.SetActive(true);
     }
@@ -68,6 +91,8 @@ public class SelectSprite : MonoBehaviour {
     public void OnPlatformSelectButtonClick()
     {
         gameObject.SetActive(true);
+        //隐藏开始面板
+        EventCenter.Broadcast(EventDefine.CloseStartPanel);
         scrollRect.content = platformPanel.GetComponent<RectTransform>();
         platformPanel.gameObject.SetActive(true);
     }
