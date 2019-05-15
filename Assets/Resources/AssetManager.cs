@@ -10,36 +10,7 @@ public class AssetManager : ScriptableObject {
     {
         return Resources.Load<AssetManager>("MyAssetManager");
     }
-    /// <summary>
-    /// 游戏背景皮肤集合
-    /// </summary>
-    [Serializable]
-    public class BgSpriteSet
-    {
-        public List<BgSprite> spriteType = new List<BgSprite>();
-        public List<Sprite> sprite = new List<Sprite>();
-
-        public Sprite this[BgSprite type]
-        {
-            get
-            {
-                int index = spriteType.IndexOf(type);
-                if (index >= 0 && index < sprite.Count)
-                {
-                    return sprite[index];
-                }
-                return null;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    spriteType.Add(type);
-                    sprite.Add(value);
-                }
-            }
-        }
-    }
+  
     /// <summary>
     /// 平台背景皮肤集合
     /// </summary>
@@ -47,16 +18,16 @@ public class AssetManager : ScriptableObject {
     public class PlatformSpriteSet
     {
         public List<PlatformSprite> spriteType = new List<PlatformSprite>();
-        public List<Sprite> sprite = new List<Sprite>();
+        public List<Sprite> sprites = new List<Sprite>();
 
         public Sprite this[PlatformSprite type]
         {
             get
             {
                 int index = spriteType.IndexOf(type);
-                if (index >= 0 && index < sprite.Count)
+                if (index >= 0 && index < sprites.Count)
                 {
-                    return sprite[index];
+                    return sprites[index];
                 }
                 return null;
             }
@@ -65,8 +36,20 @@ public class AssetManager : ScriptableObject {
                 if (value != null)
                 {
                     spriteType.Add(type);
-                    sprite.Add(value);
+                    sprites.Add(value);
                 }
+            }
+        }
+        public PlatformSprite this[Sprite sprite]
+        {
+            get
+            {
+                int index = sprites.IndexOf(sprite);
+                if (index >= 0 && index < spriteType.Count)
+                {
+                    return spriteType[index];
+                }
+                return PlatformSprite.Normal;
             }
         }
     }
@@ -162,7 +145,7 @@ public class AssetManager : ScriptableObject {
     }
 
     [Tooltip("背景皮肤列表")]
-    public BgSpriteSet bgSpriteSet = new BgSpriteSet();
+    public PlatformSpriteSet bgSpriteSet = new PlatformSpriteSet();
     [Tooltip("平台皮肤列表")]
     public PlatformSpriteSet platformSpriteSet = new PlatformSpriteSet();
     [Tooltip("玩家皮肤列表")]

@@ -7,7 +7,7 @@ using DG.Tweening;
 /// <summary>
 /// 人物皮肤选择面板
 /// </summary>
-public class ScriptSelectPanel : MonoBehaviour {
+public class SkinPanel : MonoBehaviour {
 
     private AssetManager assetManager;
     private float screenWidth;                          //当前设备的屏幕宽度
@@ -99,8 +99,7 @@ public class ScriptSelectPanel : MonoBehaviour {
     {
         if (index >= 0 && index < itemCount)
         {
-            SelectiveSprite = sprites[index];
-            print(index + " " + lastSelectIndex);
+            SelectiveSprite =sprites[index];
             //高亮显示选中的皮肤
             transform.GetChild(index).GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f);
             //上个选中的皮肤变成灰色

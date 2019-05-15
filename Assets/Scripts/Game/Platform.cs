@@ -66,4 +66,14 @@ public class Platform : MonoBehaviour {
         yield return new WaitForSeconds(time);
         PoolManager.PlatformPool.PutInObject(gameObject);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //碰到底部时销毁
+        if (collision.tag == "Bottom")
+        {
+            isDrop = true;
+            StartCoroutine("DestroyPlatForm", 0.2f);
+        }
+    }
 }

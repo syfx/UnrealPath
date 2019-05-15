@@ -1,16 +1,4 @@
-﻿
-/// <summary>
-/// 背景皮肤类型
-/// </summary>
-[System.Serializable]
- public enum BgSprite {
-    Normal,
-    Ice,
-    Grass,
-    Fire
-}
-
-/// <summary>
+﻿/// <summary>
 /// 平台皮肤类型
 /// </summary>
 [System.Serializable]

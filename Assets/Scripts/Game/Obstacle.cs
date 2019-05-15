@@ -54,8 +54,7 @@ public class Obstacle : MonoBehaviour {
 
     private void OnDisable()
     {
-        StopCoroutine("Drop");
-        StopCoroutine("DestroyObstacle");
+        StopAllCoroutines();
     }
 
     IEnumerator Drop()
@@ -75,6 +74,15 @@ public class Obstacle : MonoBehaviour {
         else
         {
             Destroy(this);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //碰到底部时销毁
+        if (collision.tag == "Bottom")
+        {
+            isDrop = true;
+            StartCoroutine("DestroyObstacle", 0.2f);
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class GamePanel : MonoBehaviour
 {
-    private Text txtRemCount;             //获得的钻石数
+    private Text txtGemCount;             //获得的钻石数
     private Text txtScore;                     //得分
     private Button btnPause;               //暂停按钮
     private Button btnPlay;                  //开始按钮
@@ -15,14 +15,15 @@ public class GamePanel : MonoBehaviour
     public void Awake()
     {
         Init();
-        EventCenter.AddListener(EventDefine.ShowGamePanel, Show);
+        EventCenter.AddListener(EventDefine.GameStart, Show);
+        EventCenter.AddListener(EventDefine.GameOver, GameOver);
     }
 
     private void Init()
     {
         //初始时设为禁用状态
         gameObject.SetActive(false);
-        txtRemCount = transform.Find("Gem/txtGemCount").GetComponent<Text>();
+        txtGemCount = transform.Find("Gem/txtGemCount").GetComponent<Text>();
         txtScore = transform.Find("txtScore").GetComponent<Text>();
         btnPause = transform.Find("Buttons/btnPause").GetComponent<Button>();
         btnPause.onClick.AddListener(OnPauseButtonClick);
@@ -31,7 +32,7 @@ public class GamePanel : MonoBehaviour
         btnPlay.gameObject.SetActive(false);
         btnPlay.onClick.AddListener(OnPlayButtonClick);
         btnReturn = transform.Find("Buttons/btnReturn").GetComponent<Button>();
-        btnReturn.onClick.AddListener(OnReStartButtonClick);
+        btnReturn.onClick.AddListener(OnReTurnButtonClick);
     }
 
     /// <summary>
@@ -45,9 +46,9 @@ public class GamePanel : MonoBehaviour
     /// <summary>
     /// 返回到主界面
     /// </summary>
-    private void OnReStartButtonClick()
+    private void OnReTurnButtonClick()
     {
-        GameManager.instance.GameOver(0);
+        GameManager.instance.OverGame();
         gameObject.SetActive(false);
         EventCenter.Broadcast(EventDefine.OpenStartPanel);
     }
@@ -57,8 +58,8 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnPlayButtonClick()
     {
-        //暂停游戏
-        Time.timeScale = 1;
+        //开始游戏
+        GameManager.instance.PlayGame();
         btnPlay.gameObject.SetActive(false);
         btnPause.gameObject.SetActive(true);
     }
@@ -69,8 +70,31 @@ public class GamePanel : MonoBehaviour
     private void OnPauseButtonClick()
     {
         //暂停游戏
-        Time.timeScale = 0;
+        GameManager.instance.PauseGame();
         btnPause.gameObject.SetActive(false);
         btnPlay.gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// 游戏结束时调用
+    /// </summary>
+    private void GameOver()
+    {
+        gameObject.SetActive(false);
+    }
+    /// <summary>
+    /// 更新得分
+    /// </summary>
+    /// <param name="score">分数</param>
+    public void UpdateScore(int score)
+    {
+        txtScore.text = score.ToString();
+    }
+    /// <summary>
+    /// 更新钻石数
+    /// </summary>
+    /// <param name="gemCount">钻石数量</param>
+    public void UpdateGemCount(int gemCount)
+    {
+        txtGemCount.text = gemCount.ToString();
     }
 }

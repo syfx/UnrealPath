@@ -22,8 +22,8 @@ public class PlatformManger : MonoBehaviour {
     private Vector2 obstacleCreatPos;                        // 障碍物生成的位置
     private int platformCount = 5;                              // 生成的平台数量 
     private bool isLeftCreat = true;                             // 是否朝左边生成
-    private bool isMeanwhileCreat = false;                // 是否两边同时生成
-    private  PlatformSprite platformSpriteType;         // 当前平台的皮肤类型
+    private bool isMeanwhileCreat = false;                 // 是否两边同时生成
+    private PlatformSprite platformSpriteType;          // 当前平台的皮肤类型
     private Sprite platformSprite;                                //当前平台皮肤
     private ObjectPool platformPool;                          // 当前平台的对象池
     private ObjectPool[] obstaclePool;                        // 当前平台障碍物的对象池
@@ -87,17 +87,18 @@ public class PlatformManger : MonoBehaviour {
         //初始化突刺生成概率为(1 / 4)
         SpikeProbability = 3;
         //初始化平台存活时间为3秒
-        PlatformLife = 30;
+        PlatformLife = 2.5f;
         //是否朝左侧生成
         isLeftCreat = true;
         //是否两边同时生成
         isMeanwhileCreat = false;
-        //设置当前的使用的平台的皮肤的类型
-        platformSpriteType = GameManager.instance.GameData.NowPlatformSpriteType;
-        platformSprite = assetManager.platformSpriteSet[platformSpriteType];
+        //设置当前的使用的平台的皮肤
+        platformSprite = GameManager.instance.PlatformSkin;
+        platformSpriteType = assetManager.platformSpriteSet[platformSprite];
+        //设置与游戏物体相对应的的对象池
         platformPool = PoolManager.PlatformPool;
         spikePool = PoolManager.SpikePool;
-        //选择相应的对象池
+        //选择不同障碍物相对应的对象池
         switch (platformSpriteType)
         {
             case PlatformSprite.Fire:
@@ -190,7 +191,7 @@ public class PlatformManger : MonoBehaviour {
             obstacleCreatPos = platformCreatPos + new Vector2(-nextPosX * 2, 0);
         }
 
-        GameObject obj = PoolManager.PlatformPool.TakeOutObject();
+        GameObject obj = platformPool.TakeOutObject();
         obj.transform.parent = transform;
         obj.transform.position = platformCreatPos;
         //设置这个平台的皮肤和下落时间
@@ -198,7 +199,7 @@ public class PlatformManger : MonoBehaviour {
         //两边同时生成
         if (isMeanwhileCreat)
         {
-            GameObject otherObj = PoolManager.PlatformPool.TakeOutObject();
+            GameObject otherObj = platformPool.TakeOutObject();
             otherObj.transform.parent = transform;
             otherObj.transform.position = new Vector2(2 * startPosX - platformCreatPos.x, platformCreatPos.y);
             //设置这个平台的皮肤和下落时间

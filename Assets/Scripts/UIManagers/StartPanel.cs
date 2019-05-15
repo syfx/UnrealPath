@@ -50,8 +50,6 @@ public class StartPanel : MonoBehaviour
     private void OnStartButtonClick()
     {
         //TODO
-        //打开游戏面板
-        EventCenter.Broadcast(EventDefine.ShowGamePanel);
         //隐藏自己
         CloseStartPanel();
         //开始游戏

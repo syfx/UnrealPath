@@ -8,10 +8,7 @@ using UnityEngine;
 
 [SerializeField]
 public class GameData {
-    /// <summary>
-    /// 当前使用的游戏中背景皮肤
-    /// </summary>
-    public BgSprite NowBgSpriteType { get; set; }
+
     /// <summary>
     /// 当前使用的台阶的皮肤类型
     /// </summary>

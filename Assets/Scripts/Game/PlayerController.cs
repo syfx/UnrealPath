@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour {
         boxCollider.isTrigger = false;
         //初始化皮肤
         spriteRenderer.sprite = sprite;
+        //人物朝左
+        transform.localScale = new Vector3(-1, 1, 1);
     }
     /// <summary>
     /// 判断是否点击到了UI上
@@ -108,6 +110,7 @@ public class PlayerController : MonoBehaviour {
         }
         //广播事件码以生成新的平台
         EventCenter.Broadcast(EventDefine.CreatPlatform);
+        GameManager.instance.ChangeScore(1);
     }
     /// <summary>
     /// 玩家坠落
@@ -128,6 +131,11 @@ public class PlayerController : MonoBehaviour {
             isJump = false;
             nextLeftPlatformPos = collision.transform.position + new Vector3(-PlatformManger.nextPosX, PlatformManger.nextPosY, 0);
             nextRightPlatformPos = nextLeftPlatformPos + new Vector2(2 * PlatformManger.nextPosX, 0);
+        }
+        //堕落到最下面
+        if (collision.tag == "Bottom")
+        {
+            DestroyPlayer(false, true);
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -159,13 +167,5 @@ public class PlayerController : MonoBehaviour {
         }
         //玩家死亡一秒后结束当前游戏
         GameManager.instance.GameOver(1);
-    }
-    /// <summary>
-    /// 玩家跌落死亡时，当玩家消失在相机内时销毁玩家
-    /// </summary>
-    private void OnBecameInvisible()
-    {
-        //销毁玩家
-        DestroyPlayer(false, true);
     }
 }
