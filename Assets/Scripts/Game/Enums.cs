@@ -19,6 +19,7 @@ public enum PlayerSprite
     Girl,
     Ninja,
     Elf,
-    Zombie
+    Zombie,
+    Pkq
 }
 

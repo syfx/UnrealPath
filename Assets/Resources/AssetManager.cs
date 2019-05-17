@@ -19,6 +19,7 @@ public class AssetManager : ScriptableObject {
     {
         public List<PlatformSprite> spriteType = new List<PlatformSprite>();
         public List<Sprite> sprites = new List<Sprite>();
+        public List<int> prices = new List<int>();
 
         public Sprite this[PlatformSprite type]
         {
@@ -66,6 +67,7 @@ public class AssetManager : ScriptableObject {
         /// 用来展示皮肤的图片
         /// </summary>
         public List<Sprite> showSprites = new List<Sprite>();
+        public List<int> prices = new List<int>();
 
         /// <summary>
         /// 根据皮肤类型，返回皮肤
@@ -155,6 +157,8 @@ public class AssetManager : ScriptableObject {
     public GameObject playerPrefab;
     [Tooltip("玩家死亡粒子特效")]
     public GameObject deathEffectPrefab;
-    [Tooltip("用来选择皮肤的显示器的预制")]
-    public GameObject childPrefab;
+    [Tooltip("用来选择皮肤的格子的预制")]
+    public GameObject itemPrefab;
+    [Tooltip("游戏音乐")]
+    public List<AudioClip> audioClips = new List<AudioClip>();
 }

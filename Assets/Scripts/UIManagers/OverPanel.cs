@@ -43,6 +43,7 @@ public class OverPanel : MonoBehaviour {
     /// </summary>
     private void OnReStartButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         //重新开始按钮
         gameObject.SetActive(false);
         GameManager.instance.RestartGame();
@@ -52,6 +53,7 @@ public class OverPanel : MonoBehaviour {
     /// </summary>
     private void OnHomeButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         gameObject.SetActive(false);
         EventCenter.Broadcast(EventDefine.OpenStartPanel);
     }
@@ -60,7 +62,7 @@ public class OverPanel : MonoBehaviour {
     /// </summary>
     private void Show()
     {
-        Init(GameManager.instance.Score, GameManager.instance.BestScore, 0);
+        Init(GameManager.instance.Score, GameManager.instance.BestScore, GameManager.instance.GainGemCount);
         gameObject.SetActive(true);
     }
     /// <summary>

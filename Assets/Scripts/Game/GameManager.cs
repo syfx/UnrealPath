@@ -1,19 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class GameManager : MonoBehaviour {
 
     #region 需要保存的游戏数据
-    private PlatformSprite plarformSkinType;        //当亲游戏中平台皮肤类型
-    private PlayerSprite playerSkinType;                //当前玩家皮肤类型
+    private PlatformSprite plarformSkinType;                //当前游戏中平台皮肤类型
+    private PlayerSprite playerSkinType;                        //当前玩家皮肤类型
+    /// <summary>
+    /// 有无声音
+    /// </summary>
+    public bool IsMusicOn { get; set; }
     /// <summary>
     /// 最高分
     /// </summary>
     public int BestScore { get; private set; }
+    /// <summary>
+    /// 钻石数量
+    /// </summary>
+    public int GemCount { get; private set; }
+    /// <summary>
+    /// 前三名
+    /// </summary>
+    public int[] Scores { get; private set; }
+    /// <summary>
+    /// 标记平台皮肤是否解锁
+    /// </summary>
+    public bool[] UnLockPlatformSkin { get; private set; }
+    /// <summary>
+    /// 标记主角皮肤是否解锁
+    /// </summary>
+    public bool[] UnLockPlayerSkin { get; private set; }
     #endregion
 
     private AssetManager assetManager;              //游戏资源管理器
+    private GameData gameData;                           //游戏数据类
     public static GameManager instance;
     [Tooltip("当前游戏的背景管理器")]
     public BgController bgController;
@@ -25,10 +48,6 @@ public class GameManager : MonoBehaviour {
     public GamePanel gamePanel;
     [Tooltip("游戏结束时的UI面板")]
     public OverPanel overPanel;
-    /// <summary>
-    /// 游戏数据类
-    /// </summary>
-    public GameData gameData { get; set; }
     /// <summary>
     /// 是否游戏开始
     /// </summary>
@@ -53,6 +72,10 @@ public class GameManager : MonoBehaviour {
     /// 游戏得分
     /// </summary>
     public int Score { get; private set; }
+    /// <summary>
+    /// 本剧获得的钻石数
+    /// </summary>
+    public int GainGemCount { get; private set; }
 
 
     private void Awake()
@@ -66,22 +89,25 @@ public class GameManager : MonoBehaviour {
     private void InitGameData()
     {
         assetManager = AssetManager.GetAssetManager();
+        //加载游戏数据
+        Read();
         if (gameData == null)
         {
-            //初始化游戏数据类
-            gameData = new GameData
-            {
-                NowPlatformSpriteType = PlatformSprite.Normal, 
-                NowPlayerSpriteType = PlayerSprite.Girl
-            };
-        }
-        else
-        {
-            //TODO:
+            plarformSkinType = PlatformSprite.Normal;
+            playerSkinType = PlayerSprite.Girl;
+            IsMusicOn = true;
+            BestScore = 0;
+            GemCount = 0;
+            Scores = new int[3] { 0, 0, 0 };
+            UnLockPlatformSkin = new bool[assetManager.platformSpriteSet.sprites.Count];
+            UnLockPlayerSkin = new bool[assetManager.playerSpriteSet.sprites.Count];
+            UnLockPlatformSkin[0] = true;
+            UnLockPlayerSkin[0] = true;
+            gameData = new GameData();
         }
         //获取资源
-        plarformSkinType = gameData.NowPlatformSpriteType;
-        playerSkinType = gameData.NowPlayerSpriteType;
+        //plarformSkinType = gameData.NowPlatformSpriteType;
+        //playerSkinType = gameData.NowPlayerSpriteType;
 
         //设置皮肤
         PlayerSkin = assetManager.playerSpriteSet[playerSkinType];
@@ -100,7 +126,7 @@ public class GameManager : MonoBehaviour {
         //停止所有协程
         StopAllCoroutines();
         //销毁当前平台
-        platformMnager.DestroyAllPlatForm(false);
+        platformMnager.DestroyAllPlatform(false);
         IsStart = true;
         IsEnd = false;
         //初始化背景
@@ -124,6 +150,8 @@ public class GameManager : MonoBehaviour {
         PlayGame();
         //设置得分为0
         Score = 0;
+        //本剧获得钻石数设为0
+        GainGemCount = 0;
         //广播游戏开始事件
         EventCenter.Broadcast(EventDefine.GameStart);
     }
@@ -153,14 +181,19 @@ public class GameManager : MonoBehaviour {
         //设置游戏背景层级
         bgController.SetBgSortingLayer("LeadGameBg");
         //销毁当前平台
-        platformMnager.DestroyAllPlatForm(false);
+        platformMnager.DestroyAllPlatform(false);
         //更新分数和最高分
+        UpdateScores();
         if (Score > BestScore)
         {
             BestScore = Score;
         }
+        //增加钻石数
+        GemCount += GainGemCount;
         //广播游戏结束消息
         EventCenter.Broadcast(EventDefine.GameOver);
+        //保存游戏
+        Save();
     }
     /// <summary>
     /// 主动结束游戏
@@ -174,7 +207,9 @@ public class GameManager : MonoBehaviour {
         //设置游戏背景层级
         bgController.SetBgSortingLayer("LeadGameBg");
         //销毁当前平台
-        platformMnager.DestroyAllPlatForm(false);
+        platformMnager.DestroyAllPlatform(false);
+        //广播主动结束游戏消息
+        EventCenter.Broadcast(EventDefine.OverGame);
     }
     /// <summary>
     /// 暂停游戏
@@ -191,12 +226,97 @@ public class GameManager : MonoBehaviour {
         Time.timeScale = 1;
     }
     /// <summary>
-    /// 设置得分
+    /// 改变得分
     /// </summary>
     /// <param name="alter ">变动大小</param>
     public void ChangeScore(int alter)
     {
         Score += alter;
         gamePanel.UpdateScore(Score);
+    }
+    /// <summary>
+    /// 改变钻石
+    /// </summary>
+    /// <param name="alter ">变动大小</param>
+    public void ChangeGemCount(int alter)
+    {
+        GainGemCount += alter;
+        gamePanel.UpdateGemCount(GainGemCount);
+    }
+    /// <summary>
+    /// 更新最高分数数组
+    /// </summary>
+    private void UpdateScores()
+    {
+        if(Score < Scores[2])
+        {
+            return;
+        }
+        Scores[2] = Score;
+        for(int i = 2; i > 0; --i)
+        {
+            if (Scores[i] > Scores[i - 1])
+            {
+                int temp = Scores[i];
+                Scores[i] = Scores[i - 1];
+                Scores[i - 1] = temp;
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+    /// <summary>
+    /// 设置游戏数据
+    /// </summary>
+    private void Save()
+    {
+        try
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            using (FileStream fs = File.Create(Application.persistentDataPath + "/GameData.data"))
+            {
+                gameData.BestScore = BestScore;
+                gameData.GemCount = GemCount;
+                gameData.IsMusicOn = IsMusicOn;
+                gameData.Scores = Scores;
+                //gameData.NowPlatformSpriteType = plarformSkinType;
+                //gameData.NowPlayerSpriteType = playerSkinType;
+                gameData.UnLockPlatformSkin = UnLockPlatformSkin;
+                gameData.UnLockPlayerSkin = UnLockPlayerSkin;
+                bf.Serialize(fs, gameData);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+    }
+    /// <summary>
+    /// 读取游戏数据
+    /// </summary>
+    private void Read()
+    {
+        try
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            using (FileStream fs = File.OpenRead(Application.persistentDataPath + "/GameData.data"))
+            {
+                gameData = (GameData)bf.Deserialize(fs);
+                BestScore = gameData.BestScore;
+                GemCount = gameData.GemCount;
+                IsMusicOn = gameData.IsMusicOn;
+                Scores = gameData.Scores;
+                //plarformSkinType = gameData.NowPlatformSpriteType;
+                //playerSkinType = gameData.NowPlayerSpriteType;
+                UnLockPlatformSkin = gameData.UnLockPlatformSkin;
+                UnLockPlayerSkin = gameData.UnLockPlayerSkin;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
     }
 }

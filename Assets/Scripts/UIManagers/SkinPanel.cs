@@ -10,10 +10,12 @@ using DG.Tweening;
 public class SkinPanel : MonoBehaviour {
 
     private AssetManager assetManager;
+    private SkinSelectPanel skinSelectPanel;    
     private float screenWidth;                          //当前设备的屏幕宽度
     private RectTransform rectTransform;       //矩形变换
     private GameObject childPrefab;               //用来显示皮肤
     private List<Sprite> sprites;                       //皮肤集合
+    private bool[] isUnLock;                             //皮肤是否已解锁
     private int index = 0;                                  //当前展示的皮肤的索引值
     private int lastIndex = 0;                            //上一帧展示的皮肤的索引值
     private int lastSelectIndex = 0;                  //上次选择的皮肤的序号
@@ -27,10 +29,15 @@ public class SkinPanel : MonoBehaviour {
     /// 初始化皮肤选择界面
     /// </summary>
     /// <param name="sprites">皮肤集合</param>
-    public void Init(List<Sprite> sprites)
+    public void Init(List<Sprite> sprites, bool[] unLockList)
     {
         this.sprites = sprites;
-        //EventCenter.AddListener(EventDefine.SelectScript, SelectSprite);
+        isUnLock = new bool[unLockList.Length];
+        for(int i = 0; i < unLockList.Length; ++i)
+        {
+            isUnLock[i] = unLockList[i];
+        }
+        skinSelectPanel = transform.parent.GetComponent<SkinSelectPanel>();
     }
 
     //加载当前的人物皮肤
@@ -47,22 +54,22 @@ public class SkinPanel : MonoBehaviour {
         screenWidth = Screen.width;
         rectTransform.sizeDelta = new Vector2(screenWidth - 160, 280);
         //获取预制体
-        childPrefab = assetManager.childPrefab;
-
+        childPrefab = assetManager.itemPrefab;
+        //设置记录格子数量的变量
+        itemCount = sprites.Count;
         //加载所有皮肤
-        foreach (Sprite sprite in sprites)
+        for (int i = 0; i < itemCount; ++i)
         {
             rectTransform.sizeDelta += new Vector2(160, 0);
             GameObject go = Instantiate(childPrefab, transform);
             //设置皮肤图片
-            go.transform.GetChild(0).GetComponent<Image>().sprite = sprite;
-            //设置记录格子数量的变量
-            itemCount++;
+            go.transform.GetChild(0).GetComponent<Image>().sprite = sprites[i];
             yield return new WaitForEndOfFrame();
         }
         //皮肤显示
         SetItemSizeAndPos();
         SelectSprite();
+        //skinSelectPanel.UpdateSelectButton(isUnLock[index], index);
     }
 
     private void Update()
@@ -76,6 +83,7 @@ public class SkinPanel : MonoBehaviour {
         if (Input.GetMouseButtonUp(0))
         {
             SetItemSizeAndPos();
+            //skinSelectPanel.UpdateSelectButton(isUnLock[index], index);
             lastIndex = index;
         }
     }

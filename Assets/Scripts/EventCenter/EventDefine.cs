@@ -9,5 +9,8 @@
     SelectPlatform,
     OpenStartPanel,
     CloseStartPanel,
-    GameOver
+    GameOver,
+    OverGame,
+    ChangeSelectButton,
+    ShowRankingPanel
 }

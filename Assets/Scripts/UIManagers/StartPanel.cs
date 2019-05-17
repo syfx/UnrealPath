@@ -41,6 +41,7 @@ public class StartPanel : MonoBehaviour
     /// </summary>
     private void OnExitButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         //退出游戏
         Application.Quit();
     }
@@ -50,6 +51,7 @@ public class StartPanel : MonoBehaviour
     private void OnStartButtonClick()
     {
         //TODO
+        AudioManager.instance.PlayButtonClickMusic();
         //隐藏自己
         CloseStartPanel();
         //开始游戏
@@ -61,6 +63,7 @@ public class StartPanel : MonoBehaviour
     private void OnFigureButtonClick()
     {
         //TODO
+        AudioManager.instance.PlayButtonClickMusic();
         EventCenter.Broadcast(EventDefine.SelectFigure);
     }
     /// <summary>
@@ -68,6 +71,7 @@ public class StartPanel : MonoBehaviour
     /// </summary>
     private void OnPlatformButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         EventCenter.Broadcast(EventDefine.SelectPlatform);
     }
 
@@ -77,7 +81,8 @@ public class StartPanel : MonoBehaviour
     private void OnRankButtonClick()
     {
         //TODO
-
+        AudioManager.instance.PlayButtonClickMusic();
+        EventCenter.Broadcast(EventDefine.ShowRankingPanel);
     }
     /// <summary>
     /// 当点击声音按钮时调用
@@ -85,7 +90,19 @@ public class StartPanel : MonoBehaviour
     private void OnSoundButtonClick()
     {
         //TODO
-
+        bool isOn = !GameManager.instance.IsMusicOn;
+        GameManager.instance.IsMusicOn = isOn;
+        //切换图标
+        if (isOn)
+        {
+            btn_Sound.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        else
+        {
+            btn_Sound.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        AudioManager.instance.IsMusicOn(isOn);
+        AudioManager.instance.PlayButtonClickMusic();
     }
     /// <summary>
     /// 打开开始游戏面板

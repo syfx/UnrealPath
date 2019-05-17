@@ -28,6 +28,7 @@ public class PlatformManger : MonoBehaviour {
     private ObjectPool platformPool;                          // 当前平台的对象池
     private ObjectPool[] obstaclePool;                        // 当前平台障碍物的对象池
     private ObjectPool spikePool;                               // 地刺障碍物的对象池
+    private ObjectPool diamondPool;                         //钻石对象池
     private int obstacleSortingOrder = 0;                   // 当前生成的障碍物的层级
     private AssetManager assetManager;                  //资源管理器
 
@@ -39,6 +40,10 @@ public class PlatformManger : MonoBehaviour {
     /// 突刺生成概率
     /// </summary>
     public int SpikeProbability { get; set; }
+    /// <summary>
+    /// 钻石生成概率
+    /// </summary>
+    public int DiamondProbability { get; set; }
     /// <summary>
     /// 平台存活时间
     /// </summary>
@@ -86,8 +91,10 @@ public class PlatformManger : MonoBehaviour {
         ObstacleProbability = 5;
         //初始化突刺生成概率为(1 / 4)
         SpikeProbability = 3;
-        //初始化平台存活时间为3秒
-        PlatformLife = 2.5f;
+        //初始化突刺生成概率为(1 / 6)
+        DiamondProbability = 6;
+        //初始化平台存活时间为2.5秒
+        PlatformLife = 2f;
         //是否朝左侧生成
         isLeftCreat = true;
         //是否两边同时生成
@@ -98,6 +105,7 @@ public class PlatformManger : MonoBehaviour {
         //设置与游戏物体相对应的的对象池
         platformPool = PoolManager.PlatformPool;
         spikePool = PoolManager.SpikePool;
+        diamondPool = PoolManager.DiamondPool;
         //选择不同障碍物相对应的对象池
         switch (platformSpriteType)
         {
@@ -138,8 +146,15 @@ public class PlatformManger : MonoBehaviour {
     {
         if(platformCount > 0)
         {
+            //平台数量减少
             --platformCount;
+            //生成平台
             CreatOnePlatform();
+            //生成钻石
+            if (Random.Range(0, DiamondProbability) == 0)
+            {
+                CreatDiamond();
+            }
             //生成障碍物
             if (Random.Range(0, ObstacleProbability) == 0)
             {
@@ -170,7 +185,6 @@ public class PlatformManger : MonoBehaviour {
             }
         }
     }
-
     /// <summary>
     /// 生成一个台阶
     /// </summary>
@@ -206,7 +220,6 @@ public class PlatformManger : MonoBehaviour {
             otherObj.GetComponent<Platform>().Init(platformSprite, PlatformLife);
         }
     }
-
     /// <summary>
     /// 生成障碍物
     /// </summary>
@@ -214,32 +227,42 @@ public class PlatformManger : MonoBehaviour {
     {
         //随机获取一个当前背景下的障碍物
         int ran = Random.Range(0, obstaclePool.Length);
-        GameObject Obj = obstaclePool[ran].TakeOutObject();
-        Obj.transform.parent = transform;
-        Obj.transform.position = obstacleCreatPos;
+        GameObject obj = obstaclePool[ran].TakeOutObject();
+        obj.transform.parent = transform;
+        obj.transform.position = obstacleCreatPos;
         //保证新生成的障碍物图层在上面
-        Obj.GetComponent<SpriteRenderer>().sortingOrder = (obstacleSortingOrder--);
+        obj.GetComponent<SpriteRenderer>().sortingOrder = (obstacleSortingOrder--);
         //设置这个障碍物的对象池和存在时间
-        Obj.GetComponent<Obstacle>().Init(obstaclePool[ran], PlatformLife);
+        obj.GetComponent<Obstacle>().Init(obstaclePool[ran], PlatformLife);
     }
-
     /// <summary>
     /// 生成突刺
     /// </summary>
     private void CreatSpiket()
     {
-        GameObject Obj = spikePool.TakeOutObject();
-        Obj.transform.parent = transform;
-        Obj.transform.position = new Vector2(2 * startPosX - platformCreatPos.x, platformCreatPos.y + spikeOfferY);
+        GameObject obj = spikePool.TakeOutObject();
+        obj.transform.parent = transform;
+        obj.transform.position = new Vector2(2 * startPosX - platformCreatPos.x, platformCreatPos.y + spikeOfferY);
         //设置这个突刺的对象池和存在时间
-        Obj.GetComponent<Obstacle>().Init(spikePool, PlatformLife);
+        obj.GetComponent<Obstacle>().Init(spikePool, PlatformLife);
+    }
+    /// <summary>
+    /// 生成钻石
+    /// </summary>
+    private void CreatDiamond()
+    {
+        GameObject obj = diamondPool.TakeOutObject();
+        obj.transform.parent = transform;
+        obj.transform.position = new Vector2(platformCreatPos.x, platformCreatPos.y + 0.5f);
+        //初始化
+        obj.GetComponent<Diamond>().Init();
     }
 
    /// <summary>
    /// 销毁所用平台
    /// </summary>
    /// <param name="isTureDestroy">是否整整销毁，为false时只是禁用</param>
-    public void DestroyAllPlatForm(bool isTureDestroy)
+    public void DestroyAllPlatform(bool isTureDestroy)
     {
         if (isTureDestroy)
         {
@@ -258,11 +281,15 @@ public class PlatformManger : MonoBehaviour {
                     continue;
                 if(transform.GetChild(i).tag == "Platform")
                 {
-                    transform.GetChild(i).GetComponent<Platform>().Destroy(0);
+                    transform.GetChild(i).GetComponent<Platform>().DestroySelf(0);
                 }
                 if (transform.GetChild(i).tag == "Obstacle")
                 {
-                    transform.GetChild(i).GetComponent<Obstacle>().Destroy(0);
+                    transform.GetChild(i).GetComponent<Obstacle>().DestroySelf(0);
+                }
+                if(transform.GetChild(i).tag == "Diamond")
+                {
+                    transform.GetChild(i).GetComponent<Diamond>().DestroySelf(0);
                 }
             }
         }

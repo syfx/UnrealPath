@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour {
     private bool isMoveLeft;                                                        //是否向左边移动       
     private SpriteRenderer spriteRenderer;                                 //渲染器
     private BoxCollider2D boxCollider;                                        //碰撞器
+    private bool isDestroy= false;                                                //是否已被销毁
 
     /// <summary>
     /// 初始化玩家
@@ -38,6 +39,8 @@ public class PlayerController : MonoBehaviour {
         spriteRenderer.sprite = sprite;
         //人物朝左
         transform.localScale = new Vector3(-1, 1, 1);
+        //标记设置为未被销毁
+        isDestroy = false;
     }
     /// <summary>
     /// 判断是否点击到了UI上
@@ -53,18 +56,13 @@ public class PlayerController : MonoBehaviour {
         return resultList.Count > 0;
     }
 
-	void FixedUpdate () {
-        ///----------------------------------------
-        ///发布到安卓平台上时，用nput.GetMouseButtonDown(0)
-        ///做判断时不知道为什么有时候检测不到点击事件，因此这里
-        ///使用预编译指令来决定使用生么方式做点击判断
-        ///-----------------------------------------
-#if UNITY_ANDROID && !UNITY_EDITOR
-        if (Input.touchCount > 0 && !isJump)
-#endif
-#if UNITY_EDITOR
+	void Update () {
+//#if UNITY_ANDROID && !UNITY_EDITOR
+//        if (Input.touchCount > 0 && !isJump)
+//#endif
+//#if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0) && !isJump)
-#endif
+//#endif
         {
             Vector3 mousePos = Input.mousePosition;
             if (IsClickOnUI(mousePos)) { return; }
@@ -92,12 +90,14 @@ public class PlayerController : MonoBehaviour {
         //判断是否坠落
         if(transform.position.y < lastPlatformPlayerPosY)
         {
+            AudioManager.instance.PlayPlayerFallMusic();
             PlayerDrop();
         }
     }
     //跳跃
     private void Jump()
     {
+        AudioManager.instance.PlayPlayerJumpMusic();
         if (isMoveLeft)
         {
             transform.DOMoveX(nextLeftPlatformPos.x, 0.15f);
@@ -110,6 +110,7 @@ public class PlayerController : MonoBehaviour {
         }
         //广播事件码以生成新的平台
         EventCenter.Broadcast(EventDefine.CreatPlatform);
+        //改变得分
         GameManager.instance.ChangeScore(1);
     }
     /// <summary>
@@ -133,9 +134,11 @@ public class PlayerController : MonoBehaviour {
             nextRightPlatformPos = nextLeftPlatformPos + new Vector2(2 * PlatformManger.nextPosX, 0);
         }
         //堕落到最下面
-        if (collision.tag == "Bottom")
+        if (collision.tag == "Bottom" && !isDestroy)
         {
+            AudioManager.instance.PlayPlayerHitMusic();
             DestroyPlayer(false, true);
+            isDestroy = true;
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -143,6 +146,7 @@ public class PlayerController : MonoBehaviour {
         //跳到障碍物或者突刺上
         if (collision.collider.tag == "Obstacle")
         {
+            AudioManager.instance.PlayPlayerHitMusic();
             DestroyPlayer(false, true);
         }
     }

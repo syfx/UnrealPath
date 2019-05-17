@@ -7,6 +7,8 @@ TagManager:
   - Platform
   - Obstacle
   - Bottom
+  - GemGather
+  - Diamond
   layers:
   - Default
   - TransparentFX
@@ -55,6 +57,9 @@ TagManager:
     locked: 0
   - name: Obstacle
     uniqueID: 2370709687
+    locked: 0
+  - name: Gem
+    uniqueID: 2993897549
     locked: 0
   - name: Player
     uniqueID: 188055223

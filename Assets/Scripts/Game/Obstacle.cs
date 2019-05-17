@@ -47,7 +47,7 @@ public class Obstacle : MonoBehaviour {
     /// 销毁障碍物
     /// </summary>
     /// <param name="time">多少秒后销毁</param>
-    public void Destroy(float time)
+    public void DestroySelf(float time)
     {
         StartCoroutine("DestroyObstacle", time);
     }

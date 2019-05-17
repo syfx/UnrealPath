@@ -47,7 +47,7 @@ public class Platform : MonoBehaviour {
     /// 销毁当前平台
     /// </summary>
     /// <param name="time">多少秒后销毁</param>
-    public void Destroy(float time)
+    public void DestroySelf(float time)
     {
         StartCoroutine("DestroyPlatForm", time);
     }

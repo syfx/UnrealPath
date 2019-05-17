@@ -18,6 +18,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 5feddf0396f8fd842b6a2034a343e884, type: 3}
     - {fileID: 21300000, guid: 274864b118ac4f54589e32e7035cd77f, type: 3}
     - {fileID: 21300000, guid: 81cb795749aefac4ea7663bc3f7f71fb, type: 3}
+    prices: 
   platformSpriteSet:
     spriteType: 00000000020000000300000001000000
     sprites:
@@ -25,26 +26,37 @@ MonoBehaviour:
     - {fileID: 21300012, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
     - {fileID: 21300002, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
     - {fileID: 21300004, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+    prices: 00000000240000004200000056000000
   playerSpriteSet:
-    spriteType: 00000000010000000200000003000000
+    spriteType: 0000000001000000020000000300000004000000
     sprites:
     - {fileID: 21300002, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300006, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300010, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300014, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
+    - {fileID: 21300000, guid: 53e6a06b3b6dd0443ba35b74fc88d997, type: 3}
     spriteColor:
     - {r: 0.6666667, g: 0.2, b: 0.06666667, a: 1}
     - {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - {r: 0.6, g: 0.6, b: 0.26666668, a: 1}
     - {r: 0.40784314, g: 0.6666667, b: 0.46666667, a: 1}
+    - {r: 1, g: 0.9333334, b: 0.47058827, a: 1}
     showSprites:
     - {fileID: 21300000, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300004, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300008, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
     - {fileID: 21300012, guid: 0c7b4faa2ba890e45a9bcb89c3349cde, type: 3}
+    - {fileID: 21300000, guid: b7eb93bf5ea5b1d49a7eae15399203c4, type: 3}
+    prices: 0000000042000000580000007e000000a6000000
   playerPrefab: {fileID: 1068314886056120, guid: 4e00ccfb83bca414e942a5499d55b550,
     type: 2}
   deathEffectPrefab: {fileID: 1183292757561966, guid: adaa12c832d564840b4525ff1763c430,
     type: 2}
-  childPrefab: {fileID: 1120001345139320, guid: d19036c8081e3a8479650ef38a59605e,
-    type: 2}
+  itemPrefab: {fileID: 1120001345139320, guid: d19036c8081e3a8479650ef38a59605e, type: 2}
+  audioClips:
+  - {fileID: 8300000, guid: 43f93bf9979e34d46a862c1fe448a414, type: 3}
+  - {fileID: 8300000, guid: e86d628ae2bb99c43805e503b83ce21e, type: 3}
+  - {fileID: 8300000, guid: 2c7dc4466a66a8744a217ad78d143749, type: 3}
+  - {fileID: 8300000, guid: 58036858fa184e44cbeb01894c87e6fa, type: 3}
+  - {fileID: 8300000, guid: a07e7d5471e1e064fba0717467121bcc, type: 3}
+  - {fileID: 8300000, guid: 2ee68ec3a2f66764197c1aac7c8fd36c, type: 3}

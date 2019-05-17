@@ -77,4 +77,19 @@ public class PoolManager {
             return spikePool;
         }
     }
+
+    private static ObjectPool diamondPool;
+    /// <summary>
+    /// 地刺障碍物对象池
+    /// </summary>
+    public static ObjectPool DiamondPool
+    {
+        get
+        {
+            if (diamondPool == null)
+                diamondPool = new ObjectPool("Prefabs/diamond");
+            return diamondPool;
+        }
+    }
+
 }

@@ -41,6 +41,9 @@ public class GamePanel : MonoBehaviour
     private void Show()
     {
         gameObject.SetActive(true);
+        //初始化显示
+        UpdateScore(0);
+        UpdateGemCount(0);
     }
 
     /// <summary>
@@ -48,6 +51,7 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnReTurnButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         GameManager.instance.OverGame();
         gameObject.SetActive(false);
         EventCenter.Broadcast(EventDefine.OpenStartPanel);
@@ -58,6 +62,7 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnPlayButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         //开始游戏
         GameManager.instance.PlayGame();
         btnPlay.gameObject.SetActive(false);
@@ -69,6 +74,7 @@ public class GamePanel : MonoBehaviour
     /// </summary>
     private void OnPauseButtonClick()
     {
+        AudioManager.instance.PlayButtonClickMusic();
         //暂停游戏
         GameManager.instance.PauseGame();
         btnPause.gameObject.SetActive(false);
